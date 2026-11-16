@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>LIBRARY INSIGHTS – Student Library Usage &amp; Statistical Analysis</title>
+
+<!-- Google Fonts: Poppins (headings) + Inter (body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS (Play CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  /* ============================================================
+     LIBRARY INSIGHTS — Royal Premium Theme v2
+     ============================================================ */
+
+  :root{
+    --bg:#0d0d1a;
+    --royal:#1a0533;
+    --royal-mid:#2d0a5e;
+    --purple:#6d28d9;
+    --purple-light:#8b5cf6;
+    --gold:#f5c518;
+    --gold-light:#fde68a;
+    --amber:#f59e0b;
+    --crimson:#dc2626;
+    --teal:#0891b2;
+    --teal-light:#06b6d4;
+    --emerald:#10b981;
+    --rose:#f43f5e;
+    --card-bg:rgba(26,5,51,0.75);
+    --card-light:rgba(255,255,255,0.97);
+    --glass-bg:rgba(255,255,255,0.08);
+    --glass-border:rgba(255,255,255,0.15);
+    --ink:#1a0533;
+    --ink-light:#2d1b4e;
+    --muted:#7c6a9a;
+    --line:#e8e0f5;
+    --shadow:0 20px 50px -15px rgba(109,40,217,0.35);
+    --shadow-lg:0 35px 70px -20px rgba(109,40,217,0.5);
+    --radius:1.4rem;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    color:var(--ink);
+    line-height:1.65;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(109,40,217,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 100%, rgba(245,197,24,0.10) 0%, transparent 55%),
+      linear-gradient(160deg, #f5f0ff 0%, #fdf8ff 35%, #f0f7ff 65%, #fefcf0 100%);
+    background-attachment:fixed;
+  }
+  h1,h2,h3,h4{font-family:'Poppins',sans-serif;color:var(--ink);margin:0;line-height:1.2}
+  p{margin:.5rem 0}
+  a{color:inherit}
+  .container{max-width:1180px;margin:0 auto;padding:0 1.25rem}
+  ::selection{background:rgba(109,40,217,0.25);color:#1a0533}
+
+  /* ---------- Keyframes ---------- */
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+  @keyframes orb-pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.5;transform:scale(1.1)}}
+  @keyframes cardIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+  /* ---------- Navigation ---------- */
+  #topnav{
+    position:sticky;top:0;z-index:60;
+    height:66px;
+    background:linear-gradient(90deg,#1a0533 0%,#2d0a5e 40%,#4c1d95 70%,#6d28d9 100%);
+    box-shadow:0 8px 32px -8px rgba(109,40,217,0.6),0 2px 0 rgba(245,197,24,0.4);
+    border-bottom:2px solid rgba(245,197,24,0.35);
+  }
+  .nav-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:1rem;height:66px;padding:0 1.25rem}
+  .nav-brand{
+    font-family:'Poppins',sans-serif;font-weight:800;font-size:1.25rem;
+    display:flex;align-items:center;gap:.5rem;white-space:nowrap;
+    background:linear-gradient(135deg,#fde68a 0%,#f5c518 40%,#fbbf24 70%,#fde68a 100%);
+    background-size:200% auto;
+    animation:shimmer 4s linear infinite;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    filter:drop-shadow(0 0 8px rgba(245,197,24,0.4));
+  }
+  .nav-brand .dot{
+    -webkit-text-fill-color:initial;color:#f5c518;
+    display:inline-block;animation:spin-slow 6s linear infinite;
+    filter:drop-shadow(0 0 8px rgba(245,197,24,0.8));
+  }
+  .nav-links{display:flex;gap:.3rem;margin-left:auto;overflow-x:auto;scrollbar-width:thin;height:66px;align-items:center}
+  .nav-links::-webkit-scrollbar{height:4px}
+  .nav-links::-webkit-scrollbar-thumb{background:rgba(245,197,24,0.4);border-radius:3px}
+  .nav-links a{
+    color:rgba(255,255,255,0.82);text-decoration:none;
+    padding:.5rem 1rem;border-radius:999px;font-size:.9rem;font-weight:500;white-space:nowrap;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+    transition:all .25s ease;
+  }
+  .nav-links a:hover{
+    background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.3);
+    transform:translateY(-2px);box-shadow:0 6px 18px -6px rgba(109,40,217,0.5);
+  }
+  .nav-links a.active{
+    background:linear-gradient(135deg,#f5c518,#f59e0b);color:#1a0533;font-weight:700;border-color:transparent;
+    box-shadow:0 0 16px rgba(245,197,24,0.6),0 6px 18px -6px rgba(245,197,24,0.5);
+  }
+
+  /* ---------- Sections ---------- */
+  section{padding:3rem 0;scroll-margin-top:86px}
+  .section-title{
+    position:relative;display:inline-block;
+    font-size:2.1rem;font-weight:800;margin-bottom:.35rem;letter-spacing:-.5px;
+    background:linear-gradient(135deg,#1a0533,#6d28d9,#0891b2);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+  }
+  .section-title::after{
+    content:"";display:block;width:90px;height:4px;border-radius:4px;margin-top:.5rem;
+    background:linear-gradient(90deg,#6d28d9,#f5c518,#0891b2);
+  }
+  .section-sub{color:var(--muted);font-size:1.05rem;margin-bottom:1.6rem;max-width:760px}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;overflow:hidden;text-align:center;color:#fff;
+    padding:5rem 1.5rem 5.5rem;border-radius:0 0 3rem 3rem;
+    background:linear-gradient(135deg,#0d001a 0%,#1a0533 20%,#2d0a5e 45%,#4c1d95 65%,#6d28d9 85%,#7c3aed 100%);
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse at 15% 85%, rgba(245,197,24,0.55) 0%, transparent 40%),
+      radial-gradient(ellipse at 85% 15%, rgba(6,182,212,0.4) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.3) 0%, transparent 60%);
+    animation:orb-pulse 8s ease-in-out infinite;
+  }
+  .hero::after{
+    content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,0.07) 47%,rgba(255,255,255,0.18) 50%,rgba(255,255,255,0.07) 53%,transparent 75%);
+    background-size:200% 100%;animation:shimmer 7s linear infinite;
+  }
+  .hero-badge{
+    position:relative;z-index:1;display:inline-block;
+    background:rgba(245,197,24,0.15);border:1.5px solid rgba(245,197,24,0.55);
+    color:#fde68a;padding:.5rem 1.25rem;border-radius:999px;font-size:.88rem;font-weight:600;margin-bottom:1.3rem;
+    backdrop-filter:blur(12px);letter-spacing:.05em;text-transform:uppercase;
+    box-shadow:0 0 20px rgba(245,197,24,0.25),inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .hero h1{
+    position:relative;z-index:1;color:#fff;
+    font-size:clamp(2.6rem,6.5vw,4.5rem);font-weight:800;letter-spacing:-1.5px;
+    text-shadow:0 0 40px rgba(245,197,24,0.5),0 4px 30px rgba(109,40,217,0.6),0 0 80px rgba(139,92,246,0.3);
+  }
+  .hero .subtitle{
+    position:relative;z-index:1;font-size:clamp(1.1rem,2.6vw,1.45rem);font-weight:400;margin-top:.8rem;
+    color:rgba(255,255,255,0.9);letter-spacing:.01em;
+  }
+  .hero .tagline{
+    position:relative;z-index:1;margin-top:1.3rem;font-style:italic;font-weight:700;font-size:1.1rem;
+    background:linear-gradient(135deg,#fde68a,#f5c518,#fbbf24);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 12px rgba(245,197,24,0.7));
+  }
+  .hero-dec{position:relative;z-index:1;margin-top:2rem;display:flex;justify-content:center;gap:1.6rem;flex-wrap:wrap}
+  .hero-dec span{font-size:2.2rem;display:inline-block;animation:float 3.5s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.4))}
+  .hero-dec span:nth-child(2){animation-delay:.5s}
+  .hero-dec span:nth-child(3){animation-delay:1s}
+  .hero-dec span:nth-child(4){animation-delay:1.5s}
+
+  /* ---------- Cards (generic) ---------- */
+  .card{
+    background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.12);
+    border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    transition:transform .28s ease,box-shadow .28s ease;
+  }
+  .card:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg)}
+
+  /* ---------- Stat cards ---------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;margin-top:-4.5rem;position:relative;z-index:2}
+  .stat-card{position:relative;overflow:hidden}
+  .stat-card .icon{
+    width:4rem;height:4rem;border-radius:1.2rem;display:grid;place-items:center;
+    font-size:1.9rem;margin-bottom:.9rem;color:#fff;
+  }
+  .icon-navy{background:linear-gradient(135deg,#1a0533,#6d28d9);box-shadow:0 10px 24px -8px rgba(109,40,217,0.6)}
+  .icon-teal{background:linear-gradient(135deg,#0891b2,#06b6d4);box-shadow:0 10px 24px -8px rgba(8,145,178,0.5)}
+  .icon-gold{background:linear-gradient(135deg,#f5c518,#f59e0b);box-shadow:0 10px 24px -8px rgba(245,197,24,0.6)}
+  .icon-lav{background:linear-gradient(135deg,#4c1d95,#8b5cf6);box-shadow:0 10px 24px -8px rgba(139,92,246,0.6)}
+  .stat-card .stat-label{color:var(--muted);font-size:.88rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+  .stat-card .stat-value{
+    font-family:'Poppins',sans-serif;font-size:3rem;font-weight:800;line-height:1.05;margin-top:.25rem;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  }
+  .stat-card .stat-foot{color:var(--muted);font-size:.78rem;margin-top:.35rem}
+  .stat-card .accent-bar{position:absolute;top:0;left:0;height:5px;width:100%}
+  .accent-navy{background:linear-gradient(90deg,#1a0533,#6d28d9,#8b5cf6)}
+  .accent-teal{background:linear-gradient(90deg,#0891b2,#06b6d4,#67e8f9)}
+  .accent-gold{background:linear-gradient(90deg,#92400e,#f5c518,#fde68a)}
+  .accent-lav{background:linear-gradient(90deg,#4c1d95,#8b5cf6,#c4b5fd)}
+  .stat-card:nth-child(1) .stat-value{background:linear-gradient(135deg,#1a0533,#6d28d9)}
+  .stat-card:nth-child(2) .stat-value{background:linear-gradient(135deg,#0891b2,#06b6d4)}
+  .stat-card:nth-child(3) .stat-value{background:linear-gradient(135deg,#92400e,#f5c518)}
+  .stat-card:nth-child(4) .stat-value{background:linear-gradient(135deg,#4c1d95,#8b5cf6)}
+  .stat-card:nth-child(1) .stat-value{-webkit-background-clip:text;background-clip:text}
+  .stat-card:nth-child(2) .stat-value{-webkit-background-clip:text;background-clip:text}
+  .stat-card:nth-child(3) .stat-value{-webkit-background-clip:text;background-clip:text}
+  .stat-card:nth-child(4) .stat-value{-webkit-background-clip:text;background-clip:text}
+  .animate-in{animation:cardIn .65s ease both}
+  .animate-in:nth-child(2){animation-delay:.12s}
+  .animate-in:nth-child(3){animation-delay:.24s}
+  .animate-in:nth-child(4){animation-delay:.36s}
+  .stat-card:hover{transform:translateY(-12px) scale(1.025);box-shadow:0 30px 60px -18px rgba(109,40,217,0.5)}
+
+  /* ---------- Data table ---------- */
+  .table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);background:rgba(255,255,255,0.95);border:1px solid rgba(109,40,217,0.12)}
+  table.data-table{width:100%;border-collapse:collapse;min-width:560px}
+  table.data-table th,table.data-table td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--line)}
+  table.data-table thead th{
+    background:linear-gradient(90deg,#1a0533,#2d0a5e,#6d28d9);color:#fff;
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:.88rem;position:sticky;top:0;
+    text-transform:uppercase;letter-spacing:.05em;
+  }
+  table.data-table tbody tr{transition:background .2s}
+  table.data-table tbody tr:nth-child(odd){background:#fff}
+  table.data-table tbody tr:nth-child(even){background:rgba(109,40,217,0.03)}
+  table.data-table tbody tr:hover{background:linear-gradient(90deg,rgba(109,40,217,0.07),rgba(109,40,217,0.02))}
+  table.data-table tbody tr:hover td:first-child{box-shadow:inset 4px 0 0 #6d28d9}
+  .td-id{font-weight:700;color:#2d0a5e;font-family:'Poppins',sans-serif;white-space:nowrap}
+  .td-act{white-space:nowrap}
+  .cell-input{
+    width:100%;max-width:130px;padding:.5rem .9rem;border:1.5px solid var(--line);
+    border-radius:999px;font-size:.95rem;font-family:'Inter',sans-serif;background:rgba(255,255,255,0.95);
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .cell-input:focus{outline:none;border-color:#6d28d9;box-shadow:0 0 0 4px rgba(109,40,217,0.15),0 0 14px rgba(109,40,217,0.2)}
+  .input-error{border-color:#dc2626 !important;background:#fff1f1}
+  .input-error:focus{box-shadow:0 0 0 4px rgba(220,38,38,0.15) !important}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:.45rem;cursor:pointer;border:none;
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:.9rem;
+    padding:.65rem 1.3rem;border-radius:999px;text-decoration:none;
+    transition:transform .18s ease,box-shadow .25s ease;
+  }
+  .btn:hover{transform:translateY(-3px) scale(1.04)}
+  .btn:active{transform:translateY(0) scale(1)}
+  .btn-primary{background:linear-gradient(135deg,#1a0533,#4c1d95,#6d28d9);color:#fff;box-shadow:0 8px 22px -6px rgba(109,40,217,0.6)}
+  .btn-primary:hover{box-shadow:0 14px 32px -6px rgba(109,40,217,0.75)}
+  .btn-teal{background:linear-gradient(135deg,#0891b2,#06b6d4);color:#fff;box-shadow:0 8px 22px -6px rgba(8,145,178,0.55)}
+  .btn-teal:hover{box-shadow:0 14px 32px -6px rgba(8,145,178,0.7)}
+  .btn-gold{background:linear-gradient(135deg,#92400e,#f5c518,#fde68a);color:#1a0533;box-shadow:0 8px 22px -6px rgba(245,197,24,0.55)}
+  .btn-gold:hover{box-shadow:0 14px 32px -6px rgba(245,197,24,0.7)}
+  .btn-lav{background:linear-gradient(135deg,#4c1d95,#7c3aed,#a78bfa);color:#fff;box-shadow:0 8px 22px -6px rgba(124,58,237,0.55)}
+  .btn-lav:hover{box-shadow:0 14px 32px -6px rgba(124,58,237,0.7)}
+  .btn-danger{background:linear-gradient(135deg,#fee2e2,#fda4b0);color:#9f1239;box-shadow:0 6px 16px -6px rgba(220,38,38,0.35)}
+  .btn-danger:hover{box-shadow:0 12px 26px -6px rgba(220,38,38,0.5)}
+  .btn-sm{padding:.4rem .85rem;font-size:.82rem}
+  .action-bar{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.25rem;align-items:center}
+
+  /* ---------- Analysis ---------- */
+  .var-selector{
+    display:flex;flex-wrap:wrap;align-items:center;gap:1.2rem;
+    background:rgba(255,255,255,0.92);border:1px solid rgba(109,40,217,0.15);
+    padding:1rem 1.25rem;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:1.5rem;
+  }
+  .var-selector .var-label{font-weight:700;color:#1a0533;font-family:'Poppins',sans-serif}
+  .var-selector label{display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;font-weight:500;padding:.45rem 1.1rem;border-radius:999px;border:1.5px solid var(--line);transition:.2s}
+  .var-selector label:hover{border-color:#6d28d9;box-shadow:0 0 0 3px rgba(109,40,217,0.1)}
+  .var-selector input[type=radio]{accent-color:#6d28d9;width:1.1rem;height:1.1rem}
+  .var-selector label:has(input:checked){border-color:#6d28d9;background:rgba(109,40,217,0.08);color:#1a0533;box-shadow:0 0 0 3px rgba(109,40,217,0.12)}
+  .sub-card{
+    position:relative;background:rgba(255,255,255,0.92);
+    border:1px solid rgba(109,40,217,0.1);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:1.6rem;margin-bottom:1.4rem;overflow:hidden;
+  }
+  .sub-card::before{content:"";position:absolute;top:0;left:0;width:6px;height:100%;border-radius:var(--radius) 0 0 var(--radius)}
+  .sub-card.mean::before{background:linear-gradient(to bottom,#1a0533,#6d28d9)}
+  .sub-card.md::before{background:linear-gradient(to bottom,#92400e,#f5c518)}
+  .sub-card.sd::before{background:linear-gradient(to bottom,#4c1d95,#8b5cf6)}
+  .sub-card{border-left:6px solid transparent}
+  .sub-card.mean{border-image:linear-gradient(to bottom,#1a0533,#6d28d9) 1}
+  .sub-card.md{border-image:linear-gradient(to bottom,#92400e,#f5c518) 1}
+  .sub-card.sd{border-image:linear-gradient(to bottom,#4c1d95,#8b5cf6) 1}
+  .sub-card h3{font-size:1.3rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;color:#1a0533}
+  .formula{
+    font-family:'Poppins',sans-serif;font-size:1.15rem;letter-spacing:.4px;
+    background:linear-gradient(90deg,rgba(26,5,51,0.07),rgba(109,40,217,0.07));
+    padding:.85rem 1.15rem;border-radius:.8rem;border:1.5px dashed rgba(109,40,217,0.35);
+    margin:.8rem 0;color:#1a0533;font-weight:600;
+  }
+  .working{background:linear-gradient(135deg,#faf8ff,#f0ebff);border-radius:.8rem;padding:.95rem 1.15rem;margin:.7rem 0;font-size:.95rem;border:1px solid rgba(109,40,217,0.1)}
+  .working p{margin:.3rem 0}
+  .step-table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.92rem}
+  .step-table th,.step-table td{padding:.5rem .7rem;text-align:right;border-bottom:1px solid var(--line)}
+  .step-table th{background:rgba(26,5,51,0.07);color:#1a0533;font-family:'Poppins',sans-serif;text-align:right}
+  .step-table th:first-child,.step-table td:first-child{text-align:left}
+  .step-table tbody tr:nth-child(even){background:rgba(109,40,217,0.03)}
+  .step-table .sum-row{font-weight:700;background:linear-gradient(90deg,rgba(245,197,24,0.18),rgba(245,197,24,0.07));color:#1a0533}
+  .result-card{
+    display:inline-block;color:#fff;padding:.75rem 1.5rem;border-radius:.9rem;
+    font-family:'Poppins',sans-serif;font-weight:700;font-size:1.15rem;margin:.6rem 0;
+    background:linear-gradient(135deg,#1a0533,#4c1d95,#6d28d9);
+    box-shadow:0 14px 32px -10px rgba(109,40,217,0.6),inset 0 1px 0 rgba(255,255,255,0.2);
+    border:1px solid rgba(255,255,255,0.15);
+  }
+  .result-card-alt{background:linear-gradient(135deg,#4c1d95,#7c3aed,#a78bfa);box-shadow:0 14px 32px -10px rgba(124,58,237,0.6)}
+  .explain{color:var(--ink-light);background:linear-gradient(90deg,rgba(109,40,217,0.07),rgba(109,40,217,0.02));border-radius:.7rem;padding:.75rem 1rem;border-left:4px solid #6d28d9;margin-top:.8rem}
+  .explain strong{color:#1a0533}
+  .toggle-line{display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;font-weight:600;color:#1a0533;margin-top:.8rem;padding:.5rem .9rem;border-radius:999px;border:1.5px solid var(--line);transition:.2s}
+  .toggle-line:hover{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
+  .toggle-line input{accent-color:#8b5cf6;width:1.1rem;height:1.1rem}
+  .note{font-weight:600;color:#92400e}
+  .empty-state{
+    text-align:center;padding:2.8rem 1rem;color:var(--muted);font-size:1.05rem;
+    background:rgba(255,255,255,0.92);border-radius:var(--radius);
+    box-shadow:var(--shadow);border:2px dashed rgba(109,40,217,0.2);
+  }
+
+  /* ---------- Charts ---------- */
+  .chart-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem}
+  .chart-wrap{
+    position:relative;height:330px;padding:1.25rem;border-radius:var(--radius);
+    background:rgba(255,255,255,0.95);border:1px solid rgba(109,40,217,0.1);
+    box-shadow:var(--shadow);
+  }
+  .chart-wrap canvas{max-width:100%}
+  .chart-no-data{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:var(--muted);font-size:1rem;font-weight:500;background:rgba(255,255,255,0.92);
+    border-radius:var(--radius);text-align:center;padding:1rem;
+  }
+  .chart-wrap.wide{grid-column:1 / -1;height:380px}
+
+  /* ---------- Results ---------- */
+  .results-table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);background:rgba(255,255,255,0.95);border:1px solid rgba(109,40,217,0.1)}
+  table.results-table{width:100%;border-collapse:collapse;min-width:480px}
+  table.results-table th,table.results-table td{padding:.8rem 1rem;text-align:center;border-bottom:1px solid var(--line)}
+  table.results-table th{background:linear-gradient(90deg,#1a0533,#2d0a5e,#6d28d9);color:#fff;font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.04em}
+  table.results-table td:first-child{text-align:left;font-weight:700;color:#1a0533}
+  table.results-table td:not(:first-child){color:#059669;font-weight:600}
+  table.results-table tbody tr:nth-child(odd){background:#fff}
+  table.results-table tbody tr:nth-child(even){background:rgba(109,40,217,0.03)}
+  table.results-table tbody tr:hover{background:linear-gradient(90deg,rgba(109,40,217,0.07),rgba(109,40,217,0.01))}
+  .interp-box{
+    background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(250,245,255,0.85));
+    border:1px solid rgba(109,40,217,0.12);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:1.6rem;margin-top:1.4rem;
+    border-left:6px solid transparent;
+    border-image:linear-gradient(to bottom,#f5c518,#f59e0b) 1;
+  }
+  .interp-box p{margin:.6rem 0}
+  .interp-box strong{color:#1a0533}
+
+  /* ---------- About ---------- */
+  .about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1.4rem;align-items:start}
+  .info-list{list-style:none;padding:0;margin:0}
+  .info-list li{padding:.6rem 0;display:flex;gap:.6rem;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+  .info-list li:last-child{border-bottom:none}
+  .info-list .lbl{font-weight:700;color:#1a0533;font-family:'Poppins',sans-serif;min-width:130px}
+  .formula-card{background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(250,245,255,0.8))}
+  .formula-line{
+    padding:.85rem 1.1rem;border-radius:.8rem;margin:.6rem 0;font-size:1.02rem;
+    border-left:4px solid #6d28d9;
+    background:linear-gradient(135deg,rgba(109,40,217,0.06),rgba(109,40,217,0.02));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+  .formula-line strong{color:#1a0533;font-family:'Poppins',sans-serif}
+
+  /* ---------- Footer ---------- */
+  footer{
+    margin-top:2.5rem;text-align:center;color:rgba(255,255,255,0.88);padding:2.5rem 1rem;
+    border-radius:2.5rem 2.5rem 0 0;
+    background:linear-gradient(135deg,#0d001a,#1a0533,#2d0a5e,#4c1d95);
+    box-shadow:0 -12px 40px -10px rgba(109,40,217,0.5);
+    border-top:2px solid rgba(245,197,24,0.3);
+  }
+  footer strong{color:#fff}
+  footer .tag{
+    font-style:italic;font-weight:700;margin-top:.5rem;font-size:1.05rem;
+    background:linear-gradient(135deg,#fde68a,#f5c518,#fbbf24);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 10px rgba(245,197,24,0.6));
+  }
+
+  /* ---------- Print only ---------- */
+  .print-only{display:none}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:900px){
+    .stat-grid{grid-template-columns:repeat(2,1fr);margin-top:-3rem}
+    .chart-grid{grid-template-columns:1fr}
+    .about-grid{grid-template-columns:1fr}
+    .section-title{font-size:1.75rem}
+  }
+  @media (max-width:560px){
+    .stat-grid{grid-template-columns:1fr}
+    .hero{padding:3rem 1rem 4rem}
+    .nav-brand{font-size:1rem}
+    .nav-links a{padding:.4rem .65rem;font-size:.82rem}
+    .stat-card .stat-value{font-size:2.4rem}
+    .hero h1{letter-spacing:-.5px}
+    .action-bar .btn{flex:1 1 auto;justify-content:center}
+  }
+
+  /* ---------- Print / PDF ---------- */
+  @media print{
+    .no-print{display:none !important}
+    .print-only{display:block !important}
+    #topnav{display:none !important}
+    body{background:#fff !important}
+    .hero{border-radius:0 !important;padding:1.5rem !important}
+    .hero::before,.hero::after{display:none !important}
+    .section-title::after{display:none !important}
+    section{padding:1rem 0 !important;scroll-margin-top:0 !important;break-inside:avoid}
+    .card,.sub-card,.chart-wrap,.interp-box,.table-wrap,.results-table-wrap{box-shadow:none !important;border:1px solid #ccc !important;break-inside:avoid}
+    .stat-grid{margin-top:1rem !important}
+    .stat-card:hover,.card:hover{transform:none !important;box-shadow:none !important}
+    .cell-input{border:none !important;background:transparent !important;padding:.2rem 0 !important}
+    .input-error{border:none !important;background:transparent !important}
+    .td-act{display:none !important}
+    .var-selector{display:none !important}
+    canvas{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+    .chart-wrap,.hero,table.data-table thead th,table.results-table th,.result-card,.result-card-alt,.stat-card .icon,.accent-bar,.sub-card,.interp-box{
+      -webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;
+    }
+    .stat-card .stat-value,.section-title,.footer .tag{-webkit-text-fill-color:#1a0533 !important;color:#1a0533 !important;background:none !important;-webkit-background-clip:border-box !important;background-clip:border-box !important}
+    .chart-no-data{display:none !important}
+    .chart-wrap{height:300px !important}
+    .chart-wrap.wide{height:320px !important}
+    .print-header{text-align:center;margin-bottom:1rem}
+    .print-header h1{font-size:1.6rem}
+    .print-header hr{border:none;border-top:2px solid #1a0533;margin:.6rem 0}
+    .animate-in{animation:none !important}
+    footer{display:none !important}
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ===== Print-only header ===== -->
+<div class="print-only print-header">
+  <h1>LIBRARY INSIGHTS</h1>
+  <p>Student Library Usage &amp; Statistical Analysis</p>
+  <p style="font-style:italic;color:#b45309;font-weight:600">Turning Library Records into Meaningful Insights.</p>
+  <hr>
+</div>
+
+<!-- ===== Navigation ===== -->
+<nav id="topnav" class="no-print">
+  <div class="nav-inner">
+    <div class="nav-brand"><span class="dot">📚</span> Library Insights</div>
+    <div class="nav-links">
+      <a href="#home" data-nav>Home</a>
+      <a href="#data" data-nav>Student Data</a>
+      <a href="#analysis" data-nav>Statistical Analysis</a>
+      <a href="#charts" data-nav>Data Visualization</a>
+      <a href="#results" data-nav>Results &amp; Interpretation</a>
+      <a href="#about" data-nav>About Project</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <!-- ===== SECTION 1: HERO / DASHBOARD ===== -->
+  <section id="home">
+    <div class="hero">
+      <span class="hero-badge">📊 Student Data Analytics Project</span>
+      <h1>LIBRARY INSIGHTS</h1>
+      <p class="subtitle">Understanding Student Library Habits Through Statistics</p>
+      <p class="tagline">Turning Library Records into Meaningful Insights.</p>
+      <div class="hero-dec"><span>📖</span><span>🔢</span><span>📈</span><span>🧮</span></div>
+    </div>
+    <div class="container">
+      <div class="stat-grid">
+        <div class="stat-card card animate-in">
+          <div class="accent-bar accent-navy"></div>
+          <div class="icon icon-navy">👥</div>
+          <div class="stat-label">Total Students</div>
+          <div class="stat-value" id="statTotalStudents">0</div>
+          <div class="stat-foot" id="statFootTotal">No data entered yet</div>
+        </div>
+        <div class="stat-card card animate-in">
+          <div class="accent-bar accent-teal"></div>
+          <div class="icon icon-teal">📊</div>
+          <div class="stat-label">Average Visits (Mean)</div>
+          <div class="stat-value" id="statMeanVisits">—</div>
+          <div class="stat-foot">of library visits</div>
+        </div>
+        <div class="stat-card card animate-in">
+          <div class="accent-bar accent-gold"></div>
+          <div class="icon icon-gold">📉</div>
+          <div class="stat-label">Mean Deviation</div>
+          <div class="stat-value" id="statMeanDev">—</div>
+          <div class="stat-foot">about the mean (visits)</div>
+        </div>
+        <div class="stat-card card animate-in">
+          <div class="accent-bar accent-lav"></div>
+          <div class="icon icon-lav">🧮</div>
+          <div class="stat-label">Standard Deviation</div>
+          <div class="stat-value" id="statSD">—</div>
+          <div class="stat-foot">population SD (visits)</div>
+        </div>
+      </div>
+      <p id="dashCaption" style="text-align:center;color:var(--muted);margin-top:1.6rem;font-size:1.05rem">No data entered yet — add values in the Student Data section below.</p>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2: STUDENT DATA ===== -->
+  <section id="data">
+    <div class="container">
+      <h2 class="section-title">Student Data Collection</h2>
+      <p class="section-sub">Enter the number of library visits and books borrowed for each student. All values are anonymous — students are identified only by ID. Calculations update automatically as you type.</p>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>Student Name</th><th>Library Visits</th><th>Books Borrowed</th><th class="no-print">Actions</th></tr>
+          </thead>
+          <tbody id="dataBody"></tbody>
+        </table>
+      </div>
+      <div class="action-bar no-print">
+        <button class="btn btn-teal" id="btnAdd" type="button">➕ Add Student</button>
+        <button class="btn btn-gold" id="btnReset" type="button">🔄 Reset Data</button>
+        <button class="btn btn-primary" id="btnExport" type="button">⬇️ Export CSV</button>
+        <button class="btn btn-lav" id="btnUpload" type="button">⬆️ Upload CSV</button>
+        <input type="file" id="fileUpload" accept=".csv" style="display:none">
+        <button class="btn btn-primary" id="btnPdf" type="button">🖨️ Download Report (PDF)</button>
+      </div>
+      <p style="color:var(--muted);font-size:.85rem;margin-top:.6rem">Tip: Only non-negative whole numbers are accepted. Empty cells are treated as “not entered” and excluded from calculations.</p>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3: STATISTICAL ANALYSIS ===== -->
+  <section id="analysis">
+    <div class="container">
+      <h2 class="section-title">Statistical Analysis</h2>
+      <p class="section-sub">Step-by-step calculations for the selected variable, using exact formulas. All values are computed live from your data.</p>
+      <div class="var-selector no-print">
+        <span class="var-label">Select variable:</span>
+        <label><input type="radio" name="analysisVar" value="visits" checked> Library Visits</label>
+        <label><input type="radio" name="analysisVar" value="books"> Books Borrowed</label>
+      </div>
+      <div id="analysisContent"></div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4: DATA VISUALIZATION ===== -->
+  <section id="charts">
+    <div class="container">
+      <h2 class="section-title">Data Visualization</h2>
+      <p class="section-sub">Interactive charts that update automatically as your data changes. Hover over bars and slices to see exact values.</p>
+      <div class="chart-grid">
+        <div class="chart-wrap" id="chartVisitsWrap">
+          <canvas id="chartVisits"></canvas>
+          <div class="chart-no-data">No library visit data yet.</div>
+        </div>
+        <div class="chart-wrap" id="chartBooksWrap">
+          <canvas id="chartBooks"></canvas>
+          <div class="chart-no-data">No books borrowed data yet.</div>
+        </div>
+        <div class="chart-wrap" id="chartPieWrap">
+          <canvas id="chartPie"></canvas>
+          <div class="chart-no-data">No books borrowed data yet.</div>
+        </div>
+        <div class="chart-wrap" id="chartHistWrap">
+          <canvas id="chartHist"></canvas>
+          <div class="chart-no-data">No library visit data yet.</div>
+        </div>
+        <div class="chart-wrap wide" id="chartGroupedWrap">
+          <canvas id="chartGrouped"></canvas>
+          <div class="chart-no-data">No data entered yet.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 5: RESULTS & INTERPRETATION ===== -->
+  <section id="results">
+    <div class="container">
+      <h2 class="section-title">Results &amp; Interpretation</h2>
+      <p class="section-sub">A summary of the key statistics and an automatic interpretation generated from your actual data.</p>
+      <div class="results-table-wrap">
+        <table class="results-table" id="resultsTable"></table>
+      </div>
+      <div class="interp-box">
+        <h3 style="font-size:1.2rem;margin-bottom:.8rem">📊 Interpretation</h3>
+        <div id="resultsInterp"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 6: ABOUT PROJECT ===== -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title">About This Project</h2>
+      <p class="section-sub">Background, purpose and the statistical concepts behind Library Insights.</p>
+      <div class="about-grid">
+        <div class="card">
+          <ul class="info-list">
+            <li><span class="lbl">Project Title:</span> <span>Library Insights – Student Library Usage &amp; Statistical Analysis</span></li>
+            <li><span class="lbl">Purpose:</span> <span>This project collects anonymous library usage data from students and applies fundamental statistical methods — Arithmetic Mean, Mean Deviation, and Standard Deviation — to uncover patterns in student library behavior.</span></li>
+            <li><span class="lbl">Subject:</span> <span>Mathematics / Statistics</span></li>
+            <li><span class="lbl">Program:</span> <span>B.Tech CSE (AI &amp; Data Science)</span></li>
+            <li><span class="lbl">Key Concepts:</span> <span>Arithmetic Mean, Mean Deviation, Standard Deviation, Data Visualization, Descriptive Statistics</span></li>
+            <li><span class="lbl">Tools Used:</span> <span>HTML5, CSS3, JavaScript, Chart.js, Tailwind CSS</span></li>
+            <li><span class="lbl">Data Source:</span> <span>Collected from actual library visit records. Each student is assigned an anonymous ID to protect privacy. A single library visit may result in multiple book issues, so book issue entries do not each represent a separate visit.</span></li>
+          </ul>
+        </div>
+        <div class="card formula-card">
+          <h3 style="font-size:1.2rem;margin-bottom:.6rem">Formulae Reference</h3>
+          <div class="formula-line"><strong>Arithmetic Mean:</strong><br>x̄ = Σxi / N</div>
+          <div class="formula-line"><strong>Mean Deviation:</strong><br>MD = Σ|xi − x̄| / N</div>
+          <div class="formula-line"><strong>Population Std. Dev.:</strong><br>σ = √[ Σ(xi − x̄)² / N ]</div>
+          <div class="formula-line"><strong>Sample Std. Dev.:</strong><br>s = √[ Σ(xi − x̄)² / (N − 1) ]</div>
+          <p style="font-size:.82rem;color:var(--muted);margin-top:.7rem">N = number of valid (non-empty) values. Empty and invalid cells are excluded. For N = 0 all results are unavailable; for N = 1 the sample standard deviation is undefined.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p><strong>Library Insights</strong> — Student Library Usage &amp; Statistical Analysis</p>
+    <p class="tag">Turning Library Records into Meaningful Insights.</p>
+    <p style="font-size:.82rem;margin-top:.4rem">B.Tech CSE (AI &amp; Data Science) · Mathematics / Statistics Project</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= Constants & State ================= */
+  const STORAGE_KEY = "libraryInsights.students";
+  let students = [];
+  let analysisVar = "visits";
+  let showSampleSD = false;
+  const charts = {};
+
+  const PIE_COLORS = ["#1E3A5F","#0D9488","#F59E0B","#A78BFA","#3B82F6","#10B981","#EF4444","#8B5CF6","#F97316","#06B6D4","#EC4899","#84CC16","#6366F1","#14B8A6","#FB7185"];
+
+  /* ================= Data layer ================= */
+  function defaultStudents(){
+    const arr = [];
+    for(let i=1;i<=15;i++){ arr.push({id:"Student "+String(i).padStart(2,"0"), visits:"", books:""}); }
+    return arr;
+  }
+  function loadStudents(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw===null) return defaultStudents();
+      const parsed = JSON.parse(raw);
+      if(!Array.isArray(parsed)) return defaultStudents();
+      return parsed.map(function(r){
+        return {
+          id: (r && r.id!=null) ? String(r.id) : "",
+          visits: (r && r.visits!=null) ? String(r.visits) : "",
+          books: (r && r.books!=null) ? String(r.books) : ""
+        };
+      });
+    }catch(e){ return defaultStudents(); }
+  }
+  function saveStudents(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(students)); }catch(e){} }
+  function resetStudents(){ students = defaultStudents(); saveStudents(); }
+  function nextStudentId(){
+    let max = 0;
+    students.forEach(function(s){
+      const m = /(\d+)\s*$/.exec(s.id);
+      if(m){ const n = parseInt(m[1],10); if(n>max) max=n; }
+    });
+    return "Student "+String(max+1).padStart(2,"0");
+  }
+  function addStudent(){ students.push({id:nextStudentId(), visits:"", books:""}); saveStudents(); }
+  function deleteStudent(index){ students.splice(index,1); saveStudents(); }
+
+  /* ================= Parsing / validation ================= */
+  function parseVal(v){
+    if(v==null) return null;
+    const s = String(v).trim();
+    if(s==="") return null;
+    if(/^\d+$/.test(s)) return Number(s);
+    return NaN;
+  }
+  function isValidInput(v){
+    if(v==null) return true;
+    const s = String(v).trim();
+    return s==="" || /^\d+$/.test(s);
+  }
+  function validNumbers(arr, field){
+    const out = [];
+    arr.forEach(function(r){
+      const p = parseVal(r[field]);
+      if(p!==null && !Number.isNaN(p)) out.push(p);
+    });
+    return out;
+  }
+
+  /* ================= Stats engine (exact formulas) ================= */
+  function sum(xs){ return xs.reduce(function(a,b){return a+b;},0); }
+  function mean(xs){ const n=xs.length; if(n===0) return null; return sum(xs)/n; }
+  function meanDeviation(xs){ const n=xs.length; if(n===0) return null; const m=mean(xs); return sum(xs.map(function(x){return Math.abs(x-m);}))/n; }
+  function populationSD(xs){ const n=xs.length; if(n===0) return null; const m=mean(xs); return Math.sqrt(sum(xs.map(function(x){return (x-m)*(x-m);}))/n); }
+  function sampleSD(xs){ const n=xs.length; if(n<=1) return null; const m=mean(xs); return Math.sqrt(sum(xs.map(function(x){return (x-m)*(x-m);}))/(n-1)); }
+  function minVal(xs){ return xs.length?Math.min.apply(null,xs):null; }
+  function maxVal(xs){ return xs.length?Math.max.apply(null,xs):null; }
+  function roundTo(v,d){ if(v==null||Number.isNaN(v)||!isFinite(v)) return null; const dd=(d==null?2:d); return Number(v.toFixed(dd)); }
+  function fmt(v,d){ const r=roundTo(v,(d==null?2:d)); if(r===null) return "—"; return String(r); }
+  function meanDeviationTable(xs){ const m=mean(xs); return xs.map(function(x){return {xi:x, mean:m, absDev:Math.abs(x-m)};}); }
+  function sdTable(xs){
+    const m=mean(xs);
+    const rows = xs.map(function(x){ const dev=x-m; return {xi:x, mean:m, dev:dev, dev2:dev*dev}; });
+    return {rows:rows, sumSq:sum(rows.map(function(r){return r.dev2;}))};
+  }
+  function extremes(arr, field){
+    const valid = arr.map(function(s){return {id:s.id, v:parseVal(s[field])};}).filter(function(o){return o.v!==null && !Number.isNaN(o.v);});
+    if(valid.length===0) return null;
+    let minO=valid[0], maxO=valid[0];
+    valid.forEach(function(o){ if(o.v<minO.v) minO=o; if(o.v>maxO.v) maxO=o; });
+    return {min:{id:minO.id,val:minO.v}, max:{id:maxO.id,val:maxO.v}};
+  }
+
+  /* ================= Rendering: Table ================= */
+  function makeInputCell(i, field, value){
+    const td = document.createElement("td");
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.inputMode = "numeric";
+    inp.className = "cell-input";
+    inp.value = (value==null)?"":String(value);
+    inp.dataset.index = i;
+    inp.dataset.field = field;
+    inp.setAttribute("aria-label", (field==="visits"?"Library Visits":"Books Borrowed")+" for row "+(i+1));
+    if(!isValidInput(value)) inp.classList.add("input-error");
+    inp.addEventListener("input", function(e){
+      const val = e.target.value;
+      students[i][field] = val;
+      if(!isValidInput(val)){ e.target.classList.add("input-error"); e.target.title="Enter a non-negative whole number"; }
+      else { e.target.classList.remove("input-error"); e.target.title=""; }
+      saveStudents();
+      updateAll();
+    });
+    td.appendChild(inp);
+    return td;
+  }
+  function renderTable(){
+    const tbody = document.getElementById("dataBody");
+    tbody.innerHTML = "";
+    students.forEach(function(s,i){
+      const tr = document.createElement("tr");
+      const tdId = document.createElement("td");
+      tdId.className = "td-id";
+      const idInput = document.createElement("input");
+      idInput.type = "text";
+      idInput.className = "cell-input";
+      idInput.style.maxWidth = "160px";
+      idInput.style.fontWeight = "700";
+      idInput.style.color = "#2d0a5e";
+      idInput.value = s.id;
+      idInput.setAttribute("aria-label", "Student name for row " + (i + 1));
+      idInput.addEventListener("input", function(e){
+        students[i].id = e.target.value;
+        saveStudents();
+        // update charts labels without full re-render
+        renderCharts();
+      });
+      tdId.appendChild(idInput);
+      tr.appendChild(tdId);
+      tr.appendChild(makeInputCell(i,"visits",s.visits));
+      tr.appendChild(makeInputCell(i,"books",s.books));
+      const tdAct = document.createElement("td");
+      tdAct.className = "td-act no-print";
+      const btn = document.createElement("button");
+      btn.className = "btn btn-danger btn-sm";
+      btn.type = "button";
+      btn.textContent = "🗑 Delete";
+      btn.addEventListener("click", function(){ deleteStudent(i); renderTable(); updateAll(); });
+      tdAct.appendChild(btn);
+      tr.appendChild(tdAct);
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* ================= Rendering: Dashboard ================= */
+  function renderDashboard(){
+    const vN = validNumbers(students,"visits");
+    const bN = validNumbers(students,"books");
+    let total = 0;
+    students.forEach(function(s){
+      const v = parseVal(s.visits), b = parseVal(s.books);
+      if((v!==null && !Number.isNaN(v)) || (b!==null && !Number.isNaN(b))) total++;
+    });
+    const hasAny = total>0;
+    document.getElementById("statTotalStudents").textContent = hasAny?String(total):"0";
+    document.getElementById("statFootTotal").textContent = hasAny?("with recorded data"):"No data entered yet";
+    document.getElementById("statMeanVisits").textContent = vN.length?fmt(mean(vN),2):"—";
+    document.getElementById("statMeanDev").textContent = vN.length?fmt(meanDeviation(vN),2):"—";
+    document.getElementById("statSD").textContent = vN.length?fmt(populationSD(vN),2):"—";
+    const cap = document.getElementById("dashCaption");
+    cap.textContent = hasAny ? "Live statistics — values update automatically as you edit the data." : "No data entered yet — add values in the Student Data section below.";
+  }
+
+  /* ================= Rendering: Analysis ================= */
+  function renderAnalysis(){
+    const xs = validNumbers(students, analysisVar);
+    const N = xs.length;
+    const varName = (analysisVar==="visits")?"Library Visits":"Books Borrowed";
+    const varNameLow = varName.toLowerCase();
+    const host = document.getElementById("analysisContent");
+
+    if(N===0){
+      host.innerHTML = '<div class="empty-state">Enter data to see calculations. No valid '+varNameLow+' values found yet.</div>';
+      return;
+    }
+
+    const m = mean(xs);
+    const s = sum(xs);
+    const mdRows = meanDeviationTable(xs);
+    const mdSum = sum(mdRows.map(function(r){return r.absDev;}));
+    const md = mdSum / N;
+    const sdT = sdTable(xs);
+    const popSd = Math.sqrt(sdT.sumSq / N);
+    const sSd = sampleSD(xs);
+
+    /* A. Arithmetic Mean */
+    const meanHtml =
+      '<div class="print-only"><strong>Variable analysed:</strong> '+varName+'</div>' +
+      '<div class="sub-card mean">' +
+        '<h3>➗ A. Arithmetic Mean</h3>' +
+        '<div class="formula">x̄ = Σxi / N</div>' +
+        '<div class="working">' +
+          '<p>Values ('+varName+'): <strong>'+xs.join(", ")+'</strong></p>' +
+          '<p>Σxi = '+s+'</p>' +
+          '<p>N = '+N+'</p>' +
+          '<p>Mean = Σxi / N = '+s+' / '+N+' = <strong>'+fmt(m,4)+'</strong></p>' +
+        '</div>' +
+        '<div class="result-card">Mean (x̄) = '+fmt(m,2)+'</div>' +
+        '<p class="explain">The average '+varNameLow+' per student is <strong>'+fmt(m,2)+'</strong>. We add up all the values and divide by the number of students to find the central value of the dataset.</p>' +
+      '</div>';
+
+    /* B. Mean Deviation */
+    const mdTableHtml =
+      '<table class="step-table"><thead><tr><th>xi</th><th>x̄</th><th>|xi − x̄|</th></tr></thead><tbody>' +
+      mdRows.map(function(r){return '<tr><td>'+r.xi+'</td><td>'+fmt(r.mean,4)+'</td><td>'+fmt(r.absDev,4)+'</td></tr>';}).join("") +
+      '<tr class="sum-row"><td colspan="2">Σ|xi − x̄|</td><td>'+fmt(mdSum,4)+'</td></tr>' +
+      '</tbody></table>';
+
+    const mdHtml =
+      '<div class="sub-card md">' +
+        '<h3>📉 B. Mean Deviation (about the mean)</h3>' +
+        '<div class="formula">MD = Σ|xi − x̄| / N</div>' +
+        mdTableHtml +
+        '<div class="working"><p>MD = '+fmt(mdSum,4)+' / '+N+' = <strong>'+fmt(md,4)+'</strong></p></div>' +
+        '<div class="result-card">Mean Deviation = '+fmt(md,2)+'</div>' +
+        '<p class="explain">On average, each student\'s '+varNameLow+' differs from the mean by <strong>'+fmt(md,2)+'</strong>. A smaller mean deviation means the values are clustered closely around the average.</p>' +
+      '</div>';
+
+    /* C. Standard Deviation */
+    const sdTableHtml =
+      '<table class="step-table"><thead><tr><th>xi</th><th>(xi − x̄)</th><th>(xi − x̄)²</th></tr></thead><tbody>' +
+      sdT.rows.map(function(r){return '<tr><td>'+r.xi+'</td><td>'+fmt(r.dev,4)+'</td><td>'+fmt(r.dev2,4)+'</td></tr>';}).join("") +
+      '<tr class="sum-row"><td colspan="2">Σ(xi − x̄)²</td><td>'+fmt(sdT.sumSq,4)+'</td></tr>' +
+      '</tbody></table>';
+
+    let sampleBlock = "";
+    if(showSampleSD){
+      const sVal = sSd;
+      sampleBlock =
+        '<div class="working"><p>s = √[ Σ(xi − x̄)² / (N − 1) ] = √[ '+fmt(sdT.sumSq,4)+' / '+(N-1)+' ] = '+(sVal===null?'<span class="note">Not available (need at least 2 values)</span>':'<strong>'+fmt(sVal,4)+'</strong>')+'</p></div>' +
+        '<div class="result-card result-card-alt">Sample SD (s) = '+(sVal===null?'N/A':fmt(sVal,2))+'</div>';
+    }
+
+    const sdHtml =
+      '<div class="sub-card sd">' +
+        '<h3>🧮 C. Standard Deviation</h3>' +
+        '<div class="formula">σ = √[ Σ(xi − x̄)² / N ]</div>' +
+        sdTableHtml +
+        '<div class="working">' +
+          '<p>Σ(xi − x̄)² = '+fmt(sdT.sumSq,4)+'</p>' +
+          '<p>÷ N = '+fmt(sdT.sumSq,4)+' / '+N+' = '+fmt(sdT.sumSq/N,4)+'</p>' +
+          '<p>σ = √'+fmt(sdT.sumSq/N,4)+' = <strong>'+fmt(popSd,4)+'</strong></p>' +
+        '</div>' +
+        '<div class="result-card">Population SD (σ) = '+fmt(popSd,2)+'</div>' +
+        sampleBlock +
+        '<p class="explain">Standard deviation measures how spread out the data is. Here σ = <strong>'+fmt(popSd,2)+'</strong>'+(showSampleSD && sSd!==null?(' and the sample SD s = '+fmt(sSd,2)):'')+'. A larger value means greater spread.</p>' +
+        '<label class="toggle-line no-print"><input type="checkbox" id="sampleSdToggle" '+(showSampleSD?"checked":"")+'> Show Sample SD (s) — uses N−1 (Bessel\'s correction)</label>' +
+      '</div>';
+
+    host.innerHTML = meanHtml + mdHtml + sdHtml;
+
+    const toggle = document.getElementById("sampleSdToggle");
+    if(toggle){
+      toggle.addEventListener("change", function(e){
+        showSampleSD = e.target.checked;
+        renderAnalysis();
+      });
+    }
+  }
+
+  /* ================= Charts ================= */
+  function chartOpts(titleText, xLabel, yLabel, showLegend){
+    return {
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{display:!!showLegend, labels:{color:"#1f2937", font:{family:"'Inter',sans-serif"}}},
+        title:{display:true, text:titleText, color:"#1E3A5F", font:{size:14, family:"'Poppins',sans-serif", weight:"600"}, padding:{bottom:10}}
+      },
+      scales:{
+        x:{title:{display:true, text:xLabel, color:"#6b7280", font:{size:12}}, grid:{display:false}, ticks:{color:"#6b7280"}},
+        y:{title:{display:true, text:yLabel, color:"#6b7280", font:{size:12}}, beginAtZero:true, ticks:{color:"#6b7280"}}
+      }
+    };
+  }
+  function initCharts(){
+    if(typeof Chart==="undefined"){ return; }
+    Chart.defaults.font.family = "'Inter',sans-serif";
+    Chart.defaults.color = "#1f2937";
+    const labels = students.map(function(s){return s.id;});
+
+    charts.visits = new Chart(document.getElementById("chartVisits"), {
+      type:"bar",
+      data:{labels:labels, datasets:[{label:"Library Visits", data:[], backgroundColor:"#1E3A5F", borderRadius:6, maxBarThickness:48}]},
+      options:chartOpts("Library Visits by Student","Student","Visits")
+    });
+    charts.books = new Chart(document.getElementById("chartBooks"), {
+      type:"bar",
+      data:{labels:labels, datasets:[{label:"Books Borrowed", data:[], backgroundColor:"#0D9488", borderRadius:6, maxBarThickness:48}]},
+      options:chartOpts("Books Borrowed by Student","Student","Books")
+    });
+    charts.pie = new Chart(document.getElementById("chartPie"), {
+      type:"pie",
+      data:{labels:[], datasets:[{label:"Books Borrowed", data:[], backgroundColor:PIE_COLORS, borderColor:"#fff", borderWidth:2}]},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{display:true, position:"right", labels:{color:"#1f2937", font:{family:"'Inter',sans-serif"}, boxWidth:14}},
+          title:{display:true, text:"Books Borrowed Distribution", color:"#1E3A5F", font:{size:14, family:"'Poppins',sans-serif", weight:"600"}, padding:{bottom:10}},
+          tooltip:{callbacks:{label:function(ctx){ return ctx.label+": "+ctx.parsed+" books"; }}}
+        }
+      }
+    });
+    charts.histogram = new Chart(document.getElementById("chartHist"), {
+      type:"bar",
+      data:{labels:["0-2","3-5","6-8","9-11","12+"], datasets:[{label:"Number of Students", data:[0,0,0,0,0], backgroundColor:"#F59E0B", borderRadius:4, categoryPercentage:1, barPercentage:0.96, maxBarThickness:70}]},
+      options:chartOpts("Frequency Distribution of Library Visits","Visits Range","Number of Students")
+    });
+    charts.grouped = new Chart(document.getElementById("chartGrouped"), {
+      type:"bar",
+      data:{labels:labels, datasets:[
+        {label:"Library Visits", data:[], backgroundColor:"#1E3A5F", borderRadius:4, maxBarThickness:30},
+        {label:"Books Borrowed", data:[], backgroundColor:"#0D9488", borderRadius:4, maxBarThickness:30}
+      ]},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{display:true, position:"top", labels:{color:"#1f2937", font:{family:"'Inter',sans-serif"}, boxWidth:14}},
+          title:{display:true, text:"Library Visits vs Books Borrowed", color:"#1E3A5F", font:{size:14, family:"'Poppins',sans-serif", weight:"600"}, padding:{bottom:10}}
+        },
+        scales:{
+          x:{title:{display:true, text:"Student", color:"#6b7280"}, grid:{display:false}, ticks:{color:"#6b7280"}},
+          y:{title:{display:true, text:"Count", color:"#6b7280"}, beginAtZero:true, ticks:{color:"#6b7280"}}
+        }
+      }
+    });
+  }
+  function toggleOverlay(wrapId, hasData){
+    const wrap = document.getElementById(wrapId);
+    if(!wrap) return;
+    const ov = wrap.querySelector(".chart-no-data");
+    if(ov) ov.style.display = hasData?"none":"flex";
+  }
+  function renderCharts(){
+    if(typeof Chart==="undefined" || !charts.visits){ return; }
+    const labels = students.map(function(s){return s.id;});
+    const num = function(s,field){ const v=parseVal(s[field]); return (v===null||Number.isNaN(v))?0:v; };
+    const visitsNum = students.map(function(s){return num(s,"visits");});
+    const booksNum = students.map(function(s){return num(s,"books");});
+
+    charts.visits.data.labels = labels;
+    charts.visits.data.datasets[0].data = visitsNum;
+    charts.visits.update();
+    toggleOverlay("chartVisitsWrap", validNumbers(students,"visits").length>0);
+
+    charts.books.data.labels = labels;
+    charts.books.data.datasets[0].data = booksNum;
+    charts.books.update();
+    toggleOverlay("chartBooksWrap", validNumbers(students,"books").length>0);
+
+    const pieStudents = students.filter(function(s){ const v=parseVal(s.books); return v!==null && !Number.isNaN(v) && v>0; });
+    charts.pie.data.labels = pieStudents.map(function(s){return s.id;});
+    charts.pie.data.datasets[0].data = pieStudents.map(function(s){return parseVal(s.books);});
+    charts.pie.data.datasets[0].backgroundColor = pieStudents.map(function(_,i){return PIE_COLORS[i%PIE_COLORS.length];});
+    charts.pie.update();
+    toggleOverlay("chartPieWrap", pieStudents.length>0);
+
+    const vN = validNumbers(students,"visits");
+    const bins=[0,0,0,0,0];
+    vN.forEach(function(v){ if(v<=2)bins[0]++; else if(v<=5)bins[1]++; else if(v<=8)bins[2]++; else if(v<=11)bins[3]++; else bins[4]++; });
+    charts.histogram.data.datasets[0].data = bins;
+    charts.histogram.update();
+    toggleOverlay("chartHistWrap", vN.length>0);
+
+    charts.grouped.data.labels = labels;
+    charts.grouped.data.datasets[0].data = visitsNum;
+    charts.grouped.data.datasets[1].data = booksNum;
+    charts.grouped.update();
+    toggleOverlay("chartGroupedWrap", validNumbers(students,"visits").length>0 || validNumbers(students,"books").length>0);
+  }
+
+  /* ================= Rendering: Results ================= */
+  function renderResults(){
+    const vN = validNumbers(students,"visits");
+    const bN = validNumbers(students,"books");
+    const table = document.getElementById("resultsTable");
+    const rows = [
+      ["Count (N)", vN.length, bN.length],
+      ["Sum", vN.length?fmt(sum(vN),2):"—", bN.length?fmt(sum(bN),2):"—"],
+      ["Mean", vN.length?fmt(mean(vN),2):"—", bN.length?fmt(mean(bN),2):"—"],
+      ["Mean Deviation", vN.length?fmt(meanDeviation(vN),2):"—", bN.length?fmt(meanDeviation(bN),2):"—"],
+      ["Std Dev (Pop.)", vN.length?fmt(populationSD(vN),2):"—", bN.length?fmt(populationSD(bN),2):"—"],
+      ["Min", vN.length?fmt(minVal(vN),2):"—", bN.length?fmt(minVal(bN),2):"—"],
+      ["Max", vN.length?fmt(maxVal(vN),2):"—", bN.length?fmt(maxVal(bN),2):"—"]
+    ];
+    table.innerHTML =
+      '<thead><tr><th>Statistic</th><th>Library Visits</th><th>Books Borrowed</th></tr></thead>' +
+      '<tbody>'+rows.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>';}).join("")+'</tbody>';
+
+    const interp = document.getElementById("resultsInterp");
+    if(vN.length===0){
+      interp.innerHTML = '<div class="empty-state" style="box-shadow:none;border:none;padding:0">Enter library visit data to see an automatic interpretation of the results.</div>';
+      return;
+    }
+    const m = mean(vN);
+    const md = meanDeviation(vN);
+    const sd = populationSD(vN);
+    const vExt = extremes(students,"visits");
+    const bExt = extremes(students,"books");
+    let sdLine;
+    if(sd<2) sdLine = "The data is closely grouped around the mean, indicating consistent library usage patterns.";
+    else if(sd<5) sdLine = "The data shows moderate variation in library usage.";
+    else sdLine = "The data shows considerable variation, suggesting diverse library usage habits.";
+    let html = '<p>The average number of library visits among the '+vN.length+' student'+(vN.length===1?"":"s")+' with recorded data is <strong>'+fmt(m,2)+'</strong> visits.</p>';
+    html += '<p>The mean deviation of <strong>'+fmt(md,2)+'</strong> indicates that students\' visits deviate from the average by about <strong>'+fmt(md,2)+'</strong> visits on average.</p>';
+    html += '<p>'+sdLine+' (Standard deviation = '+fmt(sd,2)+'.)</p>';
+    if(vExt){
+      html += '<p>The highest number of library visits is <strong>'+vExt.max.val+'</strong> ('+vExt.max.id+') and the lowest is <strong>'+vExt.min.val+'</strong> ('+vExt.min.id+').</p>';
+    }
+    if(bExt){
+      html += '<p>The most books borrowed by any student is <strong>'+bExt.max.val+'</strong> ('+bExt.max.id+') and the least is <strong>'+bExt.min.val+'</strong> ('+bExt.min.id+').</p>';
+    }else{
+      html += '<p>No books-borrowed data has been entered yet, so the most/least books borrowed cannot be determined.</p>';
+    }
+    interp.innerHTML = html;
+  }
+
+  /* ================= CSV import / export ================= */
+  function csvEscape(v){
+    const s = String((v==null)?"":v);
+    return /[",\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+  }
+  function splitCSVLine(line){
+    const out=[]; let cur=""; let inQ=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(inQ){
+        if(c==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else inQ=false; }
+        else cur+=c;
+      }else{
+        if(c==='"') inQ=true;
+        else if(c===","){ out.push(cur); cur=""; }
+        else cur+=c;
+      }
+    }
+    out.push(cur);
+    return out;
+  }
+  function exportCSV(){
+    let csv = "Student ID,Library Visits,Books Borrowed\n";
+    students.forEach(function(s){ csv += csvEscape(s.id)+","+csvEscape(s.visits)+","+csvEscape(s.books)+"\n"; });
+    const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "library-insights-data.csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+  function handleUpload(file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const text = e.target.result;
+      const lines = text.split(/\r?\n/);
+      let parsed = [];
+      let start = 0;
+      if(lines.length>0){
+        const firstCells = splitCSVLine(lines[0]);
+        if(firstCells.length>=3 && /student/i.test(firstCells[0]) && /visit/i.test(firstCells[1])){
+          start = 1;
+        }
+      }
+      for(let i=start;i<lines.length;i++){
+        const line = lines[i];
+        if(line.trim()==="") continue;
+        const cells = splitCSVLine(line);
+        const id = (cells[0]||"").trim() || nextStudentId();
+        const visits = (cells[1]!=null?cells[1]:"").trim();
+        const books = (cells[2]!=null?cells[2]:"").trim();
+        parsed.push({id:id, visits:visits, books:books});
+      }
+      if(parsed.length===0){ alert("No valid rows found in the CSV file."); return; }
+      students = parsed;
+      saveStudents();
+      renderTable();
+      updateAll();
+    };
+    reader.readAsText(file);
+  }
+
+  /* ================= Reactive pipeline ================= */
+  function updateAll(){
+    saveStudents();
+    renderDashboard();
+    renderAnalysis();
+    renderCharts();
+    renderResults();
+  }
+
+  /* ================= Nav active link ================= */
+  function setupNavHighlight(){
+    const links = document.querySelectorAll(".nav-links a[data-nav]");
+    const sections = [];
+    links.forEach(function(l){ const id=l.getAttribute("href").slice(1); const el=document.getElementById(id); if(el) sections.push(el); });
+    if(!("IntersectionObserver" in window)){ return; }
+    const obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          const id = en.target.id;
+          links.forEach(function(l){ l.classList.toggle("active", l.getAttribute("href")==="#"+id); });
+        }
+      });
+    }, {rootMargin:"-45% 0px -50% 0px", threshold:0});
+    sections.forEach(function(s){ obs.observe(s); });
+  }
+
+  /* ================= Init ================= */
+  document.addEventListener("DOMContentLoaded", function(){
+    students = loadStudents();
+    renderTable();
+    renderDashboard();
+    initCharts();
+    renderCharts();
+    renderAnalysis();
+    renderResults();
+
+    document.getElementById("btnAdd").addEventListener("click", function(){ addStudent(); renderTable(); updateAll(); });
+    document.getElementById("btnReset").addEventListener("click", function(){
+      if(confirm("Clear all data and reset to 15 empty rows?")){ resetStudents(); renderTable(); updateAll(); }
+    });
+    document.getElementById("btnExport").addEventListener("click", exportCSV);
+    document.getElementById("btnUpload").addEventListener("click", function(){ document.getElementById("fileUpload").click(); });
+    document.getElementById("fileUpload").addEventListener("change", function(e){ handleUpload(e.target.files[0]); e.target.value=""; });
+    document.getElementById("btnPdf").addEventListener("click", function(){ window.print(); });
+
+    document.querySelectorAll('input[name="analysisVar"]').forEach(function(r){
+      r.addEventListener("change", function(e){ analysisVar = e.target.value; renderAnalysis(); });
+    });
+
+    setupNavHighlight();
+  });
+})();
+</script>
+</body>
+</html>
