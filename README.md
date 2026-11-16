@@ -65,7 +65,7 @@ Built as a **Mathematics / Statistics project** for **B.Tech CSE (AI & Data Scie
 
 ## 👩‍💻 Team
 
-**B.Tech CSE (AI & Data Science) — City University**
+**B.Tech CSE (AI & Data Science) — CT University**
 
 ---
 
