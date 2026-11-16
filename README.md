@@ -14,7 +14,7 @@
 
 **Library Insights** is a fully interactive web dashboard that collects library usage data from 15 students and performs statistical analysis to uncover patterns in student library behaviour.
 
-Built as a **Mathematics / Statistics project** for **B.Tech CSE (AI & Data Science)** at **City University**.
+Built as a **Mathematics / Statistics project** for **B.Tech CSE (AI & Data Science)** at **CT University**.
 
 ---
 
@@ -70,4 +70,4 @@ Built as a **Mathematics / Statistics project** for **B.Tech CSE (AI & Data Scie
 ---
 
 ## 📄 License
-This project is for academic purposes — City University, B.Tech CSE (AI & Data Science).
+This project is for academic purposes — CT University, B.Tech CSE (AI & Data Science).
