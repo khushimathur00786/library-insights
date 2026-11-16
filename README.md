@@ -58,8 +58,8 @@ Built as a **Mathematics / Statistics project** for **B.Tech CSE (AI & Data Scie
 
 | File | Description |
 |------|-------------|
-| `index.html` | Main website (open in browser) |
-| `Library_Insights_Project_Report.html` | Full project report (open in Word) |
+| [🌐 index.html](https://khushimathur00786.github.io/library-insights/) | Main website — click to open live |
+| [📄 Library_Insights_Project_Report.html](https://khushimathur00786.github.io/library-insights/Library_Insights_Project_Report.html) | Full project report — click to open |
 
 ---
 
